@@ -1,0 +1,66 @@
+@charset 'utf-8';
+.sn-section{
+	border: solid 1px #333;
+	line-height: 24px;
+	padding: 15px;
+}
+.sn-section{
+	margin-bottom: 10px;
+}
+/* array & object */
+.sn-array,
+.sn-object{
+	padding: 20px 15px 20px 30px;
+	position: relative;
+	border: dashed 1px #ccc;
+}
+.sn-array:before,
+.sn-array:after,
+.sn-object:before,
+.sn-object:after{
+	position: absolute;
+	left: 15px;
+}
+.sn-array:before,
+.sn-object:before{
+	top: 0;
+	content: attr(data-left);
+}
+.sn-array:after,
+.sn-object:after{
+	bottom: 0;
+	content: attr(data-right) ',';
+}
+.sn-object:last-child:after{
+	content: attr(data-right);
+}
+.sn-array:after{
+	content: attr(data-right) ;
+}
+.sn-array li:after{
+	content: ',';
+}
+.sn-array li:last-child:after{
+	content: '';
+}
+
+.sn-object dt{
+    margin-right: 10px;
+    font-weight: bold;
+    float: left;
+    margin-bottom: 10px;
+}
+.sn-object dt:after{
+	content: ':';
+}
+.sn-object dd{
+	overflow: hidden;
+	margin-bottom: 10px;
+}
+
+
+
+
+
+
+

@@ -37,21 +37,23 @@ var mainData = {
 }
 
 
-var a = new Analysis({
-	data: mainData
-});
+// var a = new Analysis({
+// 	data: mainData
+// });
 //_.$('#example').innerHTML = a.innerHTML;
 
 
-_.bind(
-	'#example1',
-	'click',
-	function(e){
 
-	},
-	'a'
-)
-
+require(['js/util'], function(_){
+	_.bind(
+		'#example1',
+		'click',
+		function(e){
+			console.log('success')
+		},
+		'.c1'
+	)
+})
 
 
 

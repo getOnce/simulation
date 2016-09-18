@@ -64,9 +64,33 @@
 	margin-bottom: 10px;
 }
 
+.sn-object.sn-close{
+	padding-bottom: 8px;
+}
+.sn-object.sn-close *{
+	display: none;
+}
+.sn-object.sn-close:before{
+	content: "{ ... }";
+}
+.sn-object.sn-close:after{
+	content: '';
+}
 
 
+.sn-array.sn-close{
+	padding-bottom: 8px;
+}
+.sn-array.sn-close *{
+	display: none;
+}
+.sn-array.sn-close:before{
+	content: "{ ... }";
+}
+.sn-array.sn-close:after{
+	content: '';
+}
 
-
-
-
+.sn-mouseenter{
+	border: solid 1px red;
+}

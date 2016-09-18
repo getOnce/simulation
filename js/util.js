@@ -13,7 +13,8 @@
     return {
 		//选择dom
 		$: function(selector, flag){
-			return document[flag? 'querySelectorAll': 'querySelector'](selector)
+			var me = this;
+			return me.isObject(selector)? selector: (document[flag? 'querySelectorAll': 'querySelector'](selector));
 		},
 		//是否为函数
 		isFunction: function(arg){
@@ -88,7 +89,7 @@
 		selectorReg:[
 			{
 				key: 'id',
-				reg: /\#([\w]{1,}[\w\-\_]*)/g,
+				reg: /\#([\w]{1,}[\w\-\_]*)/,
 				//把selector通过reg检测之后的结果封装
 				handler: function(result){
 					var pass = false;	
@@ -117,7 +118,7 @@
 			},
 			{
 				key: 'class',
-				reg: /\.([\w]{1,}[\w\-\_]*)/g,
+				reg: /\.([\w]{1,}[\w\-\_]*)/,
 				handler: function(result){
 					var pass = false;
 					if(result instanceof Array){
@@ -131,12 +132,13 @@
 					}
 				},
 				check: function(result, tarValue){
-					return new RegExp('\b'+ result['value'] +'\b').test(tarValue);
+
+					return new RegExp('\\b'+ result['value'] +'\\b').test(tarValue);
 				}
 			},
 			{
 				key: 'attr',
-				reg: /\[([\w\-\_]{1,})(\={0,1})([\w\-\_]*)\]/g,
+				reg: /\[([\w\-\_]{1,})(\={0,1})([\w\-\_]*)\]/,
 				handler: function(result){
 					var pass = false, name = null, value = null;
 					if(result instanceof Array){
@@ -202,7 +204,7 @@
 		//检查当前node是否符合要求
 		checknode: function(target, targetselector){
 			var me = this,
-			//检测是否是id选择器
+			//拆分选择器-按照单种类的选择器
 				result = me.analysisSelector(targetselector),
 				right = true, 
 				pass = 0,
@@ -238,16 +240,67 @@
 				_callback = callback;
 			if(targetselector){
 				_callback = function(e){
-
-					var target = e.target, 
-						currentTarget = me.checkParentNode(target, targetselector);
-					if(currentTarget){
-						e['currentTarget'] = currentTarget
-						callback.call(currentTarget, e);
-					}
+					var target = e.target, _e = null;
+					targetselector
+						.split(',')
+						.forEach(function(item, index, arr){
+							var currentTarget = me.checkParentNode(target, item);
+							if(currentTarget){
+								_e = me.extend(e, {
+									currentTarget: currentTarget,
+									stopPropagation: function(){
+										e.stopPropagation();
+									},
+									preventDefault: function(){
+										e.preventDefault();
+									}
+								}, true);
+								
+								callback.call(currentTarget, _e||e);
+							}
+						}, me)
 				}
 			}
-			selector.addEventListener(_event, _callback)
+			selector.addEventListener(_event, _callback);
+		},
+		addClass: function(tar, newclassname){
+			var me = this;
+			if(newclassname.split(/\s{1,}/g).length > 1){
+				newclassname
+					.split(/\s{1,}/g)
+					.forEach(function(item, index, arr){
+						console.log(item);
+						me.addClass(tar, item);
+					});
+					return ;
+			}
+			var classname = tar.className,
+				classnameArr = classname? classname.split(/\s{1,}/g): null;
+			if(me.isArray(classnameArr)){
+				(classnameArr.indexOf(newclassname) != -1) || (tar.className = classname + ' '+newclassname);
+			}
+		},
+		removeClass: function(tar, oldclassname){
+			var me = this;
+			if(oldclassname.split(/\s{1,}/g).length > 1){
+				oldclassname
+					.split(/\s{1,}/g)
+					.forEach(function(item, index, arr){
+						me.removeClass(tar, item);
+					});
+					return ;
+			}
+			var classname = tar.className;
+			if(new RegExp('\\b'+ oldclassname +'\\b').test(classname)){
+				tar.className = classname.replace(new RegExp('\\b'+ oldclassname +'\\b'), function($0){
+					return ' ';
+				});
+			}
+		},
+		hasClass: function(tar, classname){
+			var me = this,
+				allClassName = tar.className;
+			return allClassName.split(/\s{1,}/g).indexOf(classname) == -1? false: true;
 		}
 
 	}

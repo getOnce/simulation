@@ -36,28 +36,13 @@ var mainData = {
 	]
 }
 
-
-// var a = new Analysis({
-// 	data: mainData
-// });
-//_.$('#example').innerHTML = a.innerHTML;
-
-
-
-require(['js/util'], function(_){
-	_.bind(
-		'#example1',
-		'click',
-		function(e){
-			console.log('success')
-		},
-		'.c1'
-	)
+require(['util', 'analysis'], function(_, A){
+	var a = new A({
+		data: mainData,
+		$el: '#example1'
+	});
+	
 })
-
-
-
-
 
 
 
